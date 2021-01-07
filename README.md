@@ -25,10 +25,10 @@ feed would overwrite the meta feeds overall rating.
 Derived is a meta feed of claims, meaning feeds consisting of subset
 of other feeds. These can be used for partial replication.
 
-Linked is a meta feed that contains links to other feeds. This could
-be other SSB ids such as mobile clients or even hypercore feeds, such
-as a cabal identifier. The trust assigned to this automically should
-depend on if the other feeds acknowledge these links.
+Linked is a meta feed that contains links to other feeds. The use case 
+for this would be same-as where other SSB ids can be linked. This allows
+applications to use this information to create a better experience. Automatic
+trust can be assigned if the linked feeds links back.
 
 Assuming one wants to do partial replication of a subset of a feed,
 first one looks in derived feeds in ones network to see if any has a
