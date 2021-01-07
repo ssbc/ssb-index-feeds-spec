@@ -6,8 +6,7 @@ This document will outline the steps needed to convert an existing SSB
 identity to make it ready for partial replication. First a meta feed
 will be generated from the existing SSB feed as described in
 [ssb-meta-feed]. A contact follow message will be posted in the existing 
-feed in order for other to discover the meta feed. This new meta feed 
-contains a couple of entries:
+feed for discoverability. This new meta feed contains a couple of entries:
 
 ```
 Main: { type: add, feedtype: classic, id: @main }
