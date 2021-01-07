@@ -5,8 +5,9 @@ Status: Design phase
 This document will outline the steps needed to convert an existing SSB
 identity to make it ready for partial replication. First a meta feed
 will be generated from the existing SSB feed as described in
-[ssb-meta-feed]. In this new meta feed a couple of entries will be
-added:
+[ssb-meta-feed]. A contact follow message will be posted in the existing 
+feed in order for other to discover the meta feed. This new meta feed 
+contains a couple of entries:
 
 ```
 Main: { type: add, feedtype: classic, id: @main }
@@ -27,7 +28,8 @@ of other feeds. These can be used for partial replication.
 
 Linked is a meta feed that contains links to other feeds. The use case 
 for this would be same-as where other SSB ids can be linked. This allows
-applications to use this information to create a better experience. Automatic
+applications to use this information to create a better experience, such 
+as showing notifications for linked feeds, linking profiles etc. Automatic 
 trust can be assigned if the linked feeds links back.
 
 Assuming one wants to do partial replication of a subset of a feed,
