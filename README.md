@@ -31,7 +31,9 @@ of an inherited value.
 
 Derived is a meta feed of claims, meaning feeds consisting of a subset
 of messages in another feed. These can be used for partial
-replication.
+replication. The derived feeds would only contain hashes of the
+original messages as their content, and could be replicated
+efficiently as auxiliary data during replication.
 
 Linked is a meta feed that contains links to other feeds. The use case
 for this is same-as where other SSB ids can be linked. This allows
@@ -61,6 +63,7 @@ replication.
   rotation of the main feed?
 - How do we handle other feed types?
 - What initial trust should be assigned and to what?
+- When and how will trust be calculated for derived feeds?
 
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [trustnet]: https://github.com/cblgh/trustnet
