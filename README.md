@@ -64,4 +64,4 @@ replication.
 
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [trustnet]: https://github.com/cblgh/trustnet
-[subset]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
+[subset replication]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
