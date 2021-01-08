@@ -3,10 +3,11 @@
 Status: Design phase
 
 This document will outline the steps needed to convert an existing SSB
-identity to make it ready for partial replication. First a meta feed
-will be generated from the existing SSB feed as described in
-[ssb-meta-feed]. A contact follow message will be posted in the existing 
-feed for discoverability. This new meta feed contains a couple of entries:
+identity to make it ready for partial replication. First a root meta
+feed will be generated from the existing SSB feed as described in
+[ssb-meta-feed]. A contact follow message to the meta feed will be
+posted in the existing feed for discoverability. The new meta feed
+contains a couple of entries:
 
 ```
 Main: { type: add, feedtype: classic, id: @main }
@@ -18,18 +19,24 @@ Trust: { type: add, feedtype: classic, id: @trust }
 Trust is a feed that contains trust ratings as defined in [trustnet]
 about other feeds and will be used to evaluate if claims can be used
 or not. It is possible to assign trust ratings to any feed in a meta
-feed included the meta feed itself. A more specific feed will
-overwrite the rating of a less specific, so a rating of the Derived
-feed would overwrite the meta feeds overall rating.
+feed included the meta feed itself. The trust rating will apply to the
+feed and all feeds transitively linked from this. By assigning a
+rating on a feed in the tree, it is possible to overwrite the rating
+of an inherited value.
 
 Derived is a meta feed of claims, meaning feeds consisting of subset
 of other feeds. These can be used for partial replication.
 
-Linked is a meta feed that contains links to other feeds. The use case 
-for this would be same-as where other SSB ids can be linked. This allows
-applications to use this information to create a better experience, such 
-as showing notifications for linked feeds, linking profiles etc. Automatic 
-trust can be assigned if the linked feeds links back.
+Linked is a meta feed that contains links to other feeds. The use case
+for this would be same-as where other SSB ids can be linked. This
+allows applications to use this information to create a better
+experience, such as showing notifications for linked feeds, linking
+profiles etc. Automatic trust can be assigned if the linked feeds
+links back.
+
+```
+{ type: 'about/same-as-link', from: '@mf', to: '@otherid' }
+```
 
 Assuming one wants to do partial replication of a subset of a feed,
 first one looks in derived feeds in ones network to see if any has a
