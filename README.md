@@ -5,9 +5,14 @@ Status: Design phase
 This document will outline the steps needed to convert an existing SSB
 identity to make it ready for partial replication. First a root meta
 feed will be generated from the existing SSB feed as described in
-[ssb-meta-feed]. A contact follow message to the meta feed will be
-posted in the existing feed for discoverability. The new meta feed
-contains a couple of entries:
+[ssb-meta-feed]. The identity of a user should now be the meta feed.
+For backwards compatibility with existing follow messages, a link to a
+main feed in a root meta feed is considered the same as a follow to
+the root meta feed itself.
+
+A contact follow message to the meta feed will be posted in the
+existing feed for discoverability. The new meta feed contains a couple
+of entries:
 
 ```
 Main: { type: add, feedtype: classic, id: @main }
@@ -24,15 +29,15 @@ feed and all feeds transitively linked from this. By assigning a
 rating on a feed in the tree, it is possible to overwrite the rating
 of an inherited value.
 
-Derived is a meta feed of claims, meaning feeds consisting of subset
-of other feeds. These can be used for partial replication.
+Derived is a meta feed of claims, meaning feeds consisting of a subset
+of messages in another feed. These can be used for partial
+replication.
 
 Linked is a meta feed that contains links to other feeds. The use case
-for this would be same-as where other SSB ids can be linked. This
-allows applications to use this information to create a better
-experience, such as showing notifications for linked feeds, linking
-profiles etc. Automatic trust can be assigned if the linked feeds
-links back.
+for this is same-as where other SSB ids can be linked. This allows
+applications to use this information to create a better experience,
+such as showing notifications for linked feeds, linking profiles
+etc. Automatic trust can be assigned if the linked feeds links back.
 
 ```
 { type: 'about/same-as-link', from: '@mf', to: '@otherid' }
