@@ -5,41 +5,43 @@ Status: Design phase
 This document will outline the steps needed to convert an existing SSB
 identity to make it ready for partial replication. First a root meta
 feed will be generated from the existing SSB feed as described in
-[ssb-meta-feed]. The identity of a user should now be the meta feed.
-For backwards compatibility with existing follow messages, a link to a
-main feed in a root meta feed is considered the same as a follow to
-the root meta feed itself.
+[ssb-meta-feed]. As described in that document the main feed is linked
+with the meta feed which means an application can start using the
+feeds linked from the meta feed for partial replication.
 
-A contact follow message to the meta feed will be posted in the
-existing feed for discoverability. The new meta feed contains a couple
-of entries:
+The new meta feed should contain the following entries:
 
 ```
-Main: { type: add, feedtype: classic, id: @main }
-Derived: { type: add, feedtype: classic, id: @derived }
-Linked: { type: add, feedtype: classic, id: @linked }
-Trust: { type: add, feedtype: classic, id: @trust }
+{ operation: 'add', feedtype: 'classic', purpose: 'main', id: @main },
+{ operation: 'add', feedtype: 'classic', purpose: 'claims', id: @claims }
+{ operation: 'add', feedtype: 'classic', purpose: 'linked', id: @linked }
+{ operation: 'add', feedtype: 'classic', purpose: 'trust', id: @trust }
 ```
 
 Trust is a feed that contains trust ratings as defined in [trustnet]
 about other feeds and will be used to evaluate if claims can be used
-or not. It is possible to assign trust ratings to any feed in a meta
-feed included the meta feed itself. The trust rating will apply to the
-feed and all feeds transitively linked from this. By assigning a
-rating on a feed in the tree, it is possible to overwrite the rating
-of an inherited value.
+or not. It is possible to assign trust ratings to any feed belonging
+to a meta feed included the meta feed itself. The trust rating will
+apply to the feed and all feeds transitively linked from this. By
+assigning a rating on a feed deeper in the tree, it is possible to
+overwrite the rating of an inherited value.
 
-Derived is a meta feed of claims, meaning feeds consisting of a subset
-of messages in another feed. These can be used for partial
-replication. The derived feeds would only contain hashes of the
-original messages as their content, and could be replicated
-efficiently as auxiliary data during replication.
+Claims is a meta feed of claims or indexes, meaning feeds consisting
+of a subset of messages in another feed. These can be used for partial
+replication. The feeds inside meta feed would only contain hashes of
+the original messages as their content, and linked messages can be
+replicated efficiently as auxiliary data during replication as
+described in [subset replication].
+
+FIXME: define exactly what claims feed we need: contacts, about, do we
+need a feed for the latest messages?
 
 Linked is a meta feed that contains links to other feeds. The use case
 for this is same-as where other SSB ids can be linked. This allows
 applications to use this information to create a better experience,
-such as showing notifications for linked feeds, linking profiles
-etc. Automatic trust can be assigned if the linked feeds links back.
+such as showing notifications for linked feeds, showing the linking
+feeds on a profiles page etc. Automatic trust can be assigned if the
+linked feeds links back.
 
 ```
 { type: 'about/same-as-link', from: '@mf', to: '@otherid' }
