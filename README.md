@@ -12,10 +12,10 @@ feeds linked from the meta feed for partial replication.
 The new meta feed should contain the following entries:
 
 ```
-{ operation: 'add', feedtype: 'classic', purpose: 'main', id: @main },
-{ operation: 'add', feedtype: 'classic', purpose: 'claims', id: @claims }
-{ operation: 'add', feedtype: 'classic', purpose: 'linked', id: @linked }
-{ operation: 'add', feedtype: 'classic', purpose: 'trust', id: @trust }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'main', id: @main },
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: @claims }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linked', id: @linked }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: @trust }
 ```
 
 Trust is a feed that contains trust ratings as defined in [trustnet]
@@ -33,8 +33,14 @@ the original messages as their content, and linked messages can be
 replicated efficiently as auxiliary data during replication as
 described in [subset replication].
 
-FIXME: define exactly what claims feed we need: contacts, about, do we
-need a feed for the latest messages?
+Applications should create at least two index feeds:
+
+```
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim1', query: 'and(type(contact),author(@main))' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim2', query: 'and(type(about),author(@main))' }
+```
+
+FIXME: do we need a rotational feed for the latest messages?
 
 Linked is a meta feed that contains links to other feeds. The use case
 for this is same-as where other SSB ids can be linked. This allows
@@ -48,7 +54,7 @@ linked feeds links back.
 ```
 
 Assuming one wants to do partial replication of a subset of a feed,
-first one looks in derived feeds in ones network to see if any has a
+first one looks in claim feeds in ones network to see if any has a
 high enough trust rating (FIXME: define) to be used. If not, if a
 connection is establed with another peer that support [subset
 replication] and is trusted (FIXME: define) then use that to get the
@@ -57,15 +63,11 @@ replication.
 
 ## Open questions
 
-- When should derived feeds should be generated, will this be
-  different between normal clients and pubs?
-- What does this mean for following? If we detect a meta feed with a
-  main feed that we already follow, should the follow automatically be
-  upgraded to the main feed. Or should this only be done on feed
-  rotation of the main feed?
+- Should pubs also use meta feeds?
+- What does this mean for following? Should we replicate all the feeds in a meta feed for main feeds we already follow?
 - How do we handle other feed types?
 - What initial trust should be assigned and to what?
-- When and how will trust be calculated for derived feeds?
+- When and how will trust be calculated for claim feeds?
 
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [trustnet]: https://github.com/cblgh/trustnet
