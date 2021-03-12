@@ -49,7 +49,7 @@ The messages should be of the following form:
 { type: 'trustnet/claims/verification', latestid: x, id: @claim1, status: 'verified' }
 ```
 
-Because feeds are immutable once you have verified it up until
+Because feeds are immutable once you have verified a feed up until
 sequence x, the past can never change. In order not to create too many
 verification messages, a new message should only be posted if claim is
 no longer valid. How often claims should be verified is at the
@@ -60,7 +60,7 @@ for this is same-as where other SSB ids can be linked. This allows
 applications to use this information to create a better user
 experience, such as showing notifications for linked feeds, showing
 the linking feeds on a profiles page etc. If the linked feed links
-back, the feeds are considered transitivily linked.
+back, the feeds are considered transitively linked.
 
 ```
 { type: 'about/same-as-link', from: '@mf', to: '@otherid' }
@@ -82,27 +82,23 @@ one looks in trusted claimaudit feeds to find any that can be
 used. Trusted is defined as:
 
 A target feed is trusted if:
-
  -  One has assigned any positive, non-zero amount of trust to the
-    target feed if the trustnet calculation returns it as trusted
+    target feed, or
+ - the trustnet calculation returns the feed as trusted
 
 A trustnet calculation is performed as:
-
- -  All first order (i.e. direct) trust assignments are regarded as
-    most trusted
-
- -  All nonzero rankings are clustered using ckmeans clustering on
-    their resulting appleseed scores (ranks). The most trusted group
-    is calculated by breaking the rankings into 3 clusters, and
-    discarding the cluster with the lowest values. This is true if and
-    only if there exists at least one direct trust assignment that is
-    high enough, as defined by the option trustThreshold
-    [0..1]. trustThreshold is defined as having a default value of
-    0.50, if unspecified.
-
-If any direct trust assignments are not included in the top 2
-clusters, then they are added to the concatenation of the top 2
-clusters before returning the result of the trustnet calculation.
+ - All positive, non-zero first order (direct) trust assignments are always
+   returned as trusted.
+ - If there are no first-order trust assignments with a trust weight exceeding
+   `TrustNet.trustThreshold`, computation is shortcircuited and only the first
+   order trust assignments are returned. 
+ - If there is at least one first-order trust assignment exceeding the trust
+   threshold, then [Appleseed] ranks are calculated for the given trust graph.
+ - TrustNet's trusted feeds are then calculated by breaking the Appleseed
+   rankings into 3 ckmeans clusters, and discarding the cluster of with the lowest ranks. 
+ - If any direct trust assignments are not included in the top 2 clusters, then
+   they are added to the concatenation of the top 2 clusters before returning
+   the result as the trustnet calculation.
 
 If no verified claims are available one should fall back to full
 replication of that main feed.
@@ -114,6 +110,7 @@ replication of that main feed.
 - What initial trust should be assigned and to what?
 
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
+[Appleseed]: https://github.com/cblgh/appleseed-metric 
 [trustnet]: https://github.com/cblgh/trustnet
 [ssb-friends]: https://github.com/ssbc/ssb-friends
 [subset replication]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
