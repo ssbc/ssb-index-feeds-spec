@@ -109,12 +109,17 @@ A trustnet calculation is performed as:
 If no verified claims are available one should fall back to full
 replication of that main feed.
 
+A new user will at first not trust anyone and thus can't do partial
+replication. On the other hand if they are onboarded using someone
+they know and trust that would enable partial replication.
+
 ## Open questions
 
 - Should pubs also use meta feeds?
 - How do we handle other feed types?
 - What initial trust should be assigned and to what?
 - Do we need a rotational feed for the latest messages?
+
 
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [Appleseed]: https://github.com/cblgh/appleseed-metric 
