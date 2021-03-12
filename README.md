@@ -32,8 +32,6 @@ Applications should create at least two index feeds:
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim2', query: 'and(type(about),author(@main))' }
 ```
 
-FIXME: do we need a rotational feed for the latest messages?
-
 Trust is a feed that contains trust ratings within a number of areas
 as defined in [trustnet] about other feeds. One areas where this will
 be used is for verifications of claims. An auditor verifies claims and
@@ -54,6 +52,14 @@ sequence x, the past can never change. In order not to create too many
 verification messages, a new message should only be posted if claim is
 no longer valid. How often claims should be verified is at the
 discretion of the auditor.
+
+In the case where a claim is no longer valid, the claim feed and all
+messages referenced from this feed should be removed from the local
+database. After which they need to be downloaded again as described
+later in the document. It is worth noting that it is limited what a
+malicious peer could do. The messages in a claim still needs to be
+signed by the author, so at worst messages can be left out which for
+contact messages and about messages does not seem like a big deal.
 
 Linked is a meta feed that contains links to other feeds. The use case
 for this is same-as where other SSB ids can be linked. This allows
@@ -108,6 +114,7 @@ replication of that main feed.
 - Should pubs also use meta feeds?
 - How do we handle other feed types?
 - What initial trust should be assigned and to what?
+- do we need a rotational feed for the latest messages?
 
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [Appleseed]: https://github.com/cblgh/appleseed-metric 
