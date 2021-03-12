@@ -44,7 +44,7 @@ writes those to a new feed within the meta feed:
 The messages should be of the following form:
 
 ```
-{ type: 'trustnet/claims/verification', latestid: x, id: @claim1, status: 'verified' }
+{ type: 'trustnet/claims/verification', latestid: x, id: @claim1, metafeed: @claims, status: 'verified' }
 ```
 
 Because feeds are immutable once you have verified a feed up until
@@ -84,8 +84,8 @@ still be followed, this is to ensure backwards compatibility with
 existing clients.
 
 Assuming one wants to do partial replication of a subset of a feed,
-one looks in trusted claimaudit feeds to find any that can be
-used. Trusted is defined as:
+one uses trusted claimaudits feeds combined with the meta feeds they
+link to find one that can be used. Trusted is defined as:
 
 A target feed is trusted if:
  -  One has assigned any positive, non-zero amount of trust to the
@@ -114,7 +114,7 @@ replication of that main feed.
 - Should pubs also use meta feeds?
 - How do we handle other feed types?
 - What initial trust should be assigned and to what?
-- do we need a rotational feed for the latest messages?
+- Do we need a rotational feed for the latest messages?
 
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [Appleseed]: https://github.com/cblgh/appleseed-metric 
