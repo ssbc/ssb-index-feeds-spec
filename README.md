@@ -14,11 +14,12 @@ The new meta feed should contain the following entries:
 ```
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'main', id: @main },
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: @claims }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: @claimaudits }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: @trust }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linked', id: @linked }
 ```
 
-## Claims
+## Claims and audits
 
 Claims is a meta feed of claims or indexes, meaning feeds consisting
 of a subset of messages in another feed. These can be used for partial
@@ -34,21 +35,12 @@ Applications should create at least two index feeds:
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim2', query: 'and(type(about),author(@main))' }
 ```
 
-## Trust
-
-Trust is also meta feed that contains one feed for each trust area
-with ratings within that areas as defined in [trustnet]. One area
-where this will be used is for verifications of claims. 
-
-```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: @claimaudits }
-```
-
 An auditor verifies claims of other feeds and writes messages of the
-following form:
+following form to the the claimaudits feed:
 
 ```
-{ type: 'trustnet/claims/verification', latestid: x, id: @claim1, metafeed: @claims, status: 'verified' }
+{ type: 'claims/verification', latestseq: x, id: @claim1, metafeed: @claims, status: 'verified' }
+{ type: 'claims/verification', latestseq: x, id: @claim2, metafeed: @claims, status: 'invalid' }
 ```
 
 Because feeds are immutable once you have verified a feed up until
@@ -62,8 +54,23 @@ messages referenced from this feed should be removed from the local
 database. After which they need to be downloaded again as described
 later in the document. It is worth noting that it is limited what a
 malicious peer could do. The messages in a claim still needs to be
-signed by the author, so at worst messages can be left out which for
-contact messages and about messages does not seem like a big deal.
+signed by the author, so at worst messages can be left out.
+
+## Trust
+
+Trust is also a meta feed that contains one feed for each trust area
+with ratings within that areas as defined in [trustnet]. One area
+where this will be used is for delegating verifications of claims:
+
+```
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', area: 'claimaudits', id: @claimaudits }
+```
+
+A trust assignment from you to another feeds claimaudits feed would be:
+
+```
+{ type: 'trustnet/assignment', src: '@main', dest: '@claimaudits', weight: 1 }
+```
 
 # Linked
 
@@ -115,9 +122,9 @@ A trustnet calculation is performed as:
 If no verified claims are available one should fall back to full
 replication of that main feed.
 
-A new user will at first not trust anyone and thus can't do partial
-replication. On the other hand if they are onboarded using someone
-they know and trust that would enable partial replication.
+A random new user will at first not trust anyone and thus can't do
+partial replication. On the other hand if they are onboarded using
+someone they know and trust that would enable partial replication.
 
 ## Open questions
 
