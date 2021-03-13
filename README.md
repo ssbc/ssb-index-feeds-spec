@@ -14,9 +14,11 @@ The new meta feed should contain the following entries:
 ```
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'main', id: @main },
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: @claims }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linked', id: @linked }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: @trust }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linked', id: @linked }
 ```
+
+## Claims
 
 Claims is a meta feed of claims or indexes, meaning feeds consisting
 of a subset of messages in another feed. These can be used for partial
@@ -31,6 +33,8 @@ Applications should create at least two index feeds:
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim1', query: 'and(type(contact),author(@main))' }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim2', query: 'and(type(about),author(@main))' }
 ```
+
+## Trust
 
 Trust is also meta feed that contains one feed for each trust area
 with ratings within that areas as defined in [trustnet]. One area
@@ -60,6 +64,8 @@ later in the document. It is worth noting that it is limited what a
 malicious peer could do. The messages in a claim still needs to be
 signed by the author, so at worst messages can be left out which for
 contact messages and about messages does not seem like a big deal.
+
+# Linked
 
 Linked is a meta feed that contains links to other feeds. The use case
 for this is same-as where other SSB ids can be linked. This allows
