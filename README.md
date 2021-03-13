@@ -39,8 +39,8 @@ An auditor verifies claims of other feeds and writes messages of the
 following form to the the claimaudits feed:
 
 ```
-{ type: 'claims/verification', latestseq: x, id: @claim1, metafeed: @claims, status: 'verified' }
-{ type: 'claims/verification', latestseq: x, id: @claim2, metafeed: @claims, status: 'invalid' }
+{ type: 'claims/verification', latestseq: x, id: @claim1, metafeed: @mf, status: 'verified' }
+{ type: 'claims/verification', latestseq: x, id: @claim2, metafeed: @mf, status: 'invalid' }
 ```
 
 Because feeds are immutable once you have verified a feed up until
@@ -69,7 +69,7 @@ where this will be used is for delegating verifications of claims:
 A trust assignment from you to another feeds claimaudits feed would be:
 
 ```
-{ type: 'trustnet/assignment', src: '@main', dest: '@claimaudits', weight: 1 }
+{ type: 'trustnet/assignment', src: '@main', dest: '@otherclaimaudits', metafeed: @mf, weight: 1.0 }
 ```
 
 # Linked
@@ -125,6 +125,13 @@ replication of that main feed.
 A random new user will at first not trust anyone and thus can't do
 partial replication. On the other hand if they are onboarded using
 someone they know and trust that would enable partial replication.
+
+Lets look at how onboarding could work for Alice that got invited by
+Bob. First alice downloads Bobs main feed. She then trusts Bob and
+downloads Bobs meta feed, all trust feeds, claim audits and the linked
+feed. By using the metafeed field on trust assignments, Alice is able
+to recursively download trust assignments, their claim audits and from
+that decide what claims can be used.
 
 ## Open questions
 
