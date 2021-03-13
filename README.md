@@ -32,16 +32,16 @@ Applications should create at least two index feeds:
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim2', query: 'and(type(about),author(@main))' }
 ```
 
-Trust is a feed that contains trust ratings within a number of areas
-as defined in [trustnet] about other feeds. One areas where this will
-be used is for verifications of claims. An auditor verifies claims and
-writes those to a new feed within the meta feed:
+Trust is also meta feed that contains one feed for each trust area
+with ratings within that areas as defined in [trustnet]. One area
+where this will be used is for verifications of claims. 
 
 ```
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: @claimaudits }
 ```
 
-The messages should be of the following form:
+An auditor verifies claims of other feeds and writes messages of the
+following form:
 
 ```
 { type: 'trustnet/claims/verification', latestid: x, id: @claim1, metafeed: @claims, status: 'verified' }
