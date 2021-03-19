@@ -12,27 +12,41 @@ feed for partial replication.
 The new meta feed should contain the following entries:
 
 ```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'main', id: @main },
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: @claims }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: @claimaudits }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: @trust }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linked', id: @linked }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'main', id: '@main' },
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'indexes', id: '@indexes' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: '@claims' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: '@claimaudits' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: '@trust' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linked', id: '@linked' }
 ```
 
-## Claims and audits
+## Indexes
 
-Claims is a meta feed of claims or indexes, meaning feeds consisting
-of a subset of messages in another feed. These can be used for partial
-replication. The feeds inside this meta feed should only contain
-hashes of the original messages as their content. These linked
-messages can be replicated efficiently as auxiliary data during
-replication as described in [subset replication].
+Indexes is a meta feed of feeds linking to a subset of messages in
+another feed. These can be used for partial replication of the main
+feed. The feeds inside this meta feed should only contain hashes of
+the original messages as their content. These linked messages can be
+replicated efficiently as auxiliary data during replication as
+described in [subset replication].
 
 Applications should create at least two index feeds:
 
 ```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim1', query: 'and(type(contact),author(@main))' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim2', query: 'and(type(about),author(@main))' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@index1', query: 'and(type(contact),author(@main))' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@index2', query: 'and(type(about),author(@main))' }
+```
+
+## Claims and audits
+
+Clients supporting meta feeds should create indexes as described above
+for their own main feed. In order to still do partial replicating of
+older feeds it might make sense for others to create claims and audit
+that these claims are indeed valid indexes.
+
+Claims are written in much the same way as indexes:
+
+```
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim1', query: 'and(type(contact),author(@other))' }
 ```
 
 An auditor verifies claims of other feeds and writes messages of the
@@ -43,15 +57,15 @@ following form to the the claimaudits feed:
 { type: 'claims/verification', latestseq: x, id: @claim2, metafeed: @mf, status: 'invalid' }
 ```
 
-Because feeds are immutable once you have verified a feed up until
-sequence x, the past can never change. In order not to create too many
+Because feeds are immutable, once you have verified a feed up until
+sequence x the past can never change. In order not to create too many
 verification messages, a new message should only be posted if claim is
 no longer valid. How often claims should be verified is at the
 discretion of the auditor.
 
 In the case where a claim is no longer valid, the claim feed and all
 messages referenced from this feed should be removed from the local
-database. After which they need to be downloaded again as described
+database. After this they need to be downloaded again as described
 later in the document. It is worth noting that it is limited what a
 malicious peer could do. The messages in a claim still needs to be
 signed by the author, so at worst messages can be left out.
@@ -60,17 +74,20 @@ signed by the author, so at worst messages can be left out.
 
 Trust is also a meta feed that contains one feed for each trust area
 with ratings within that areas as defined in [trustnet]. One area
-where this will be used is for delegating verifications of claims:
+where this will be used is for delegating trust related to
+verification of claims:
 
 ```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', area: 'claimaudits', id: @claimaudits }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', area: 'claimaudits', id: '@claimaudits' }
 ```
 
 A trust assignment from you to another feeds claimaudits feed would be:
 
 ```
-{ type: 'trustnet/assignment', src: '@main', dest: '@otherclaimaudits', metafeed: @mf, weight: 1.0 }
+{ type: 'trustnet/assignment', src: '@main', dest: '@otherclaimaudits', metafeed: '@othermf', weight: 1.0 }
 ```
+
+FIXME: should we use @mf instead of @main for src?
 
 # Linked
 
@@ -85,20 +102,32 @@ back, the feeds are considered transitively linked.
 { type: 'about/same-as-link', from: '@mf', to: '@otherid' }
 ```
 
-We here should expand on how feeds are replicated within a system with
-meta feeds. Existing replication is taking care of by [ssb-friends]
-that replicates feeds based on follow or block relations as described
-in that repo.
+FIXME: describe how to do private messages:
+ - Include all feeds (scale, previous messages)
+ - Create a virtual identitiy feed and share the key between device,
+   on device lost create a new identity.
 
-Existing contact messages on the main feed still form the basis for
-feed replication. From this basis the parts of the meta feed needed
-for the application should also be replicated. Linked feeds should
-still be followed, this is to ensure backwards compatibility with
-existing clients.
+# Replication
+
+Here we expand on how feeds are replicated within a system with meta
+feeds.
+
+Current replication is taking care of by [ssb-friends] based on follow
+or block relations as described in that repo.
+
+With meta feeds, contact messages on the main feed still form the
+basis for feed replication. From this basis the parts of the meta feed
+needed for the application should also be replicated. Linked feeds
+should still be followed, this is to ensure backwards compatibility
+with existing clients.
 
 Assuming one wants to do partial replication of a subset of a feed,
-one uses trusted claimaudits feeds combined with the meta feeds they
-link to find one that can be used. Trusted is defined as:
+first one tries to find the meta feed (FIXME: describe in detail) and
+from that the index feed. 
+
+If that is not found, one uses trusted claimaudits feeds combined with
+the meta feeds they link to find one that can be used. Trusted is
+defined as:
 
 A target feed is trusted if:
  -  One has assigned any positive, non-zero amount of trust to the
