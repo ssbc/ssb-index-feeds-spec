@@ -17,7 +17,7 @@ The new meta feed should contain the following entries:
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: '@claims' }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: '@claimaudits' }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: '@trust' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linked', id: '@linked' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linkedidentity', id: '@linked' }
 ```
 
 ## Indexes
@@ -89,23 +89,51 @@ A trust assignment from you to another feeds claimaudits feed would be:
 
 FIXME: should we use @mf instead of @main for src?
 
-# Linked
+# Linked identity
 
-Linked is a meta feed that contains links to other feeds. The use case
-for this is same-as where other SSB ids can be linked. This allows
-applications to use this information to create a better user
-experience, such as showing notifications for linked feeds, showing
-the linking feeds on a profiles page etc. If the linked feed links
-back, the feeds are considered transitively linked.
+Linked is a meta feed that is used to maintain virtual identities this
+feed is a member of. It works by consensus, meaning as long as all the
+members of a virtual identity are mutually linked, the identity is
+valid. Any member of the identity can revoke the identity by creating
+a tombstone message.
+
+Anyone can create a new identity by first creating a keypair and then
+announcing the identity:
 
 ```
-{ type: 'about/same-as-link', from: '@mf', to: '@otherid' }
+{ type: 'linked/create', identity: '@id', name: 'arj' }
 ```
 
-FIXME: describe how to do private messages:
- - Include all feeds (scale, previous messages)
- - Create a virtual identitiy feed and share the key between device,
-   on device lost create a new identity.
+Then the identity can be linked between metafeeds:
+
+```
+{ type: 'linked/link', from: '@mf', to: '@othermf' }
+```
+
+Once @othermf posts a similar message, the identity is linked and the
+creator of the identity should send the private key of the identity to
+the new member.
+
+The identity can be extended with members by having all current
+members linking the new feed and the new feed linking back.
+
+Any member can revoke the identity by posting the following message:
+
+```
+{ type: 'linked/tombstone', identity: '@id' }
+```
+
+Once another member sees this message they should also post a
+tombstone message, this is to make it harder for an adversary try and
+keep the identity alive after one of the feeds has been compromised.
+
+These linked identities thus act as public groups that can also be
+used for same-as between multiple physical devices belonging to the
+same person.
+
+For a good starting point for existing discussions on SSB going back 5
+years (linked in the thread):
+%YaWEWHDWAY6p/g9zIwCJovsd1SUyHpwuGGz3Ug/jtW8=.sha256
 
 # Replication
 
