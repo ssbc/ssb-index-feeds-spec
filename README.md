@@ -127,9 +127,19 @@ Once another member sees this message they should also post a
 tombstone message, this is to make it harder for an adversary try and
 keep the identity alive after one of the feeds has been compromised.
 
+Lastly the name can be changed in a consensus fashion as well:
+
+```
+{ type: 'linked/name', identity: '@id', name: 'arj' }
+```
+
 These linked identities thus act as public groups that can also be
 used for same-as between multiple physical devices belonging to the
 same person.
+
+The goal of linked identities is for small groups where the members
+should be publicly known, for larger groups [private-groups] should be
+considered instead.
 
 For a good starting point for existing discussions on SSB going back 5
 years (linked in the thread):
@@ -203,3 +213,4 @@ that decide what claims can be used.
 [trustnet]: https://github.com/cblgh/trustnet
 [ssb-friends]: https://github.com/ssbc/ssb-friends
 [subset replication]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
+[private-groups]: https://github.com/mixmix/ssb-tribes
