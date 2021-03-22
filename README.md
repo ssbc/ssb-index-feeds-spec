@@ -133,6 +133,9 @@ Lastly the name can be changed in a consensus fashion as well:
 { type: 'linked/name', identity: '@id', name: 'arj' }
 ```
 
+A new feed added to the group can merge these messages by including
+the name in the link message.
+
 These linked identities thus act as public groups that can also be
 used for same-as between multiple physical devices belonging to the
 same person.
@@ -140,6 +143,12 @@ same person.
 The goal of linked identities is for small groups where the members
 should be publicly known, for larger groups [private-groups] should be
 considered instead.
+
+It might also be possible to operate with groups where instead of full
+censensus only a quorum is needed. Imagine you have groups of groups,
+where instead of having each member of a linked identity ack a link
+between the identity and another linked identity, you would only have
+say 2/3 of the members do that.
 
 For a good starting point for existing discussions on SSB going back 5
 years (linked in the thread):
