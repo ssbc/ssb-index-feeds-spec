@@ -92,8 +92,9 @@ FIXME: should we use @mf instead of @main for src?
 # Feedless identity
 
 Feedless identity is a concept where multiple regular feeds are linked
-together for a purpose such as same-as. The identity will have keypair
-that is shared with between the linked members.
+together with a specific purpose such as belonging to the same
+physical person (same-as). The identity will have keypair that is
+shared with between the linked members.
 
 Thus feedless is a meta feed that contains messages related to other
 feeds it is linked to. It works by consensus, meaning as long as all
