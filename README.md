@@ -106,13 +106,13 @@ Anyone can create a new feedless identity by first creating a keypair
 and then announcing the identity:
 
 ```
-{ type: 'linked/create', identity: '@id', name: 'arj' }
+{ type: 'feedless/create', identity: '@id', name: 'arj' }
 ```
 
 Then the identity can be linked between metafeeds:
 
 ```
-{ type: 'linked/link', genesis: '%abc', identity: '@id', from: '@mf', to: '@othermf' }
+{ type: 'feedless/link', identity: '@id', from: '@mf', to: '@othermf', tangles: { feedless: { root: '%abc', previous: '%abcd' } } }
 ```
 
 Once @othermf posts a similar message, the identity is linked and the
@@ -126,7 +126,7 @@ members linking the new feed and the new feed linking back.
 Any member can revoke the identity by posting the following message:
 
 ```
-{ type: 'linked/tombstone', genesis: '%abc', identity: '@id' }
+{ type: 'feedless/tombstone', identity: '@id', tangles: { feedless: { root: '%abc', previous: '%abcd' } } }
 ```
 
 Once another member sees this message they should also post a
@@ -137,7 +137,7 @@ the feeds has been compromised.
 Lastly the name can be changed in a consensus fashion as well:
 
 ```
-{ type: 'linked/name', genesis: '%abc', identity: '@id', name: 'arj' }
+{ type: 'feedless/name', identity: '@id', name: 'arj', tangles: { feedless: { root: '%abc', previous: '%abcd' } } }
 ```
 
 A new feed added to the identity can merge these messages by including
