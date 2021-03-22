@@ -17,7 +17,7 @@ The new meta feed should contain the following entries:
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: '@claims' }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: '@claimaudits' }
 { type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: '@trust' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'linkedidentity', id: '@linked' }
+{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'feedlessidentity', id: '@feedless' }
 ```
 
 ## Indexes
@@ -89,16 +89,20 @@ A trust assignment from you to another feeds claimaudits feed would be:
 
 FIXME: should we use @mf instead of @main for src?
 
-# Linked identity
+# Feedless identity
 
-Linked is a meta feed that is used to maintain virtual identities this
-feed is a member of. It works by consensus, meaning as long as all the
-members of a virtual identity are mutually linked, the identity is
-valid. Any member of the identity can revoke the identity by creating
-a tombstone message.
+Feedless identity is a concept where multiple regular feeds are linked
+together for a purpose such as same-as. The identity will have keypair
+that is shared with between the linked members.
 
-Anyone can create a new identity by first creating a keypair and then
-announcing the identity:
+Thus feedless is a meta feed that contains messages related to other
+feeds it is linked to. It works by consensus, meaning as long as all
+the members of a feedless identity are mutually linked, the identity
+is valid. Any member of the identity can revoke the identity by
+creating a tombstone message.
+
+Anyone can create a new feedless identity by first creating a keypair
+and then announcing the identity:
 
 ```
 { type: 'linked/create', identity: '@id', name: 'arj' }
@@ -107,12 +111,13 @@ announcing the identity:
 Then the identity can be linked between metafeeds:
 
 ```
-{ type: 'linked/link', from: '@mf', to: '@othermf' }
+{ type: 'linked/link', genesis: '%abc', from: '@mf', to: '@othermf' }
 ```
 
 Once @othermf posts a similar message, the identity is linked and the
 creator of the identity should send the private key of the identity to
-the new member.
+the new member. Messages of a feedless identity are tangled using the
+initial message.
 
 The identity can be extended with members by having all current
 members linking the new feed and the new feed linking back.
@@ -120,35 +125,36 @@ members linking the new feed and the new feed linking back.
 Any member can revoke the identity by posting the following message:
 
 ```
-{ type: 'linked/tombstone', identity: '@id' }
+{ type: 'linked/tombstone', genesis: '%abc', identity: '@id' }
 ```
 
 Once another member sees this message they should also post a
-tombstone message, this is to make it harder for an adversary try and
-keep the identity alive after one of the feeds has been compromised.
+tombstone message, this is to make it harder for an adversary to try
+and keep the identity alive by withholding new messages after one of
+the feeds has been compromised.
 
 Lastly the name can be changed in a consensus fashion as well:
 
 ```
-{ type: 'linked/name', identity: '@id', name: 'arj' }
+{ type: 'linked/name', genesis: '%abc', identity: '@id', name: 'arj' }
 ```
 
-A new feed added to the group can merge these messages by including
+A new feed added to the identity can merge these messages by including
 the name in the link message.
 
-These linked identities thus act as public groups that can also be
+These feedless identities thus act as public groups that can e.g. be
 used for same-as between multiple physical devices belonging to the
 same person.
 
-The goal of linked identities is for small groups where the members
-should be publicly known, for larger groups [private-groups] should be
-considered instead.
+The goal of feedless identities is for small groups where the members
+should be publicly known. For larger groups, [private-groups] should
+be considered instead.
 
-It might also be possible to operate with groups where instead of full
-censensus only a quorum is needed. Imagine you have groups of groups,
-where instead of having each member of a linked identity ack a link
-between the identity and another linked identity, you would only have
-say 2/3 of the members do that.
+It might also be possible to operate with identities where instead of
+full censensus only a quorum is needed. Imagine you have groups of
+groups, where instead of having each member of a feedless identity ack
+a link between the identity and another linked identity, you would
+only have say 2/3 of the members do that.
 
 For a good starting point for existing discussions on SSB going back 5
 years (linked in the thread):
