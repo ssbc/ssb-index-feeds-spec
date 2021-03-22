@@ -99,8 +99,8 @@ shared with between the linked members.
 Thus feedless is a meta feed that contains messages related to other
 feeds it is linked to. It works by consensus, meaning as long as all
 the members of a feedless identity are mutually linked, the identity
-is valid. Any member of the identity can revoke the identity by
-creating a tombstone message.
+is valid. Any member of the identity can revoke the validity of an
+identity by creating a tombstone message.
 
 Anyone can create a new feedless identity by first creating a keypair
 and then announcing the identity:
