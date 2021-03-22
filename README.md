@@ -112,7 +112,7 @@ and then announcing the identity:
 Then the identity can be linked between metafeeds:
 
 ```
-{ type: 'linked/link', genesis: '%abc', from: '@mf', to: '@othermf' }
+{ type: 'linked/link', genesis: '%abc', identity: '@id', from: '@mf', to: '@othermf' }
 ```
 
 Once @othermf posts a similar message, the identity is linked and the
