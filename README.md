@@ -156,7 +156,9 @@ It might also be possible to operate with identities where instead of
 full censensus only a quorum is needed. Imagine you have groups of
 groups, where instead of having each member of a feedless identity ack
 a link between the identity and another linked identity, you would
-only have say 2/3 of the members do that.
+only have say 2/3 of the members do that. Another thing to note about
+groups of groups is that in the consensus form they end up being the
+same as just a group of all the individual feeds.
 
 For a good starting point for existing discussions on SSB going back 5
 years (linked in the thread):
