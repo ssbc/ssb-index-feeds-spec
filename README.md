@@ -53,8 +53,8 @@ An auditor verifies claims of other feeds and writes messages of the
 following form to the the claimaudits feed:
 
 ```
-{ type: 'claims/verification', latestseq: x, id: @claim1, metafeed: @mf, status: 'verified' }
-{ type: 'claims/verification', latestseq: x, id: @claim2, metafeed: @mf, status: 'invalid' }
+{ type: 'claims/verification', latestseq: x, id: '@claim1', metafeed: '@mf', status: 'verified' }
+{ type: 'claims/verification', latestseq: x, id: '@claim2', metafeed: '@mf', status: 'invalid' }
 ```
 
 Because feeds are immutable, once you have verified a feed up until
@@ -84,10 +84,11 @@ verification of claims:
 A trust assignment from you to another feeds claimaudits feed would be:
 
 ```
-{ type: 'trustnet/assignment', src: '@main', dest: '@otherclaimaudits', metafeed: '@othermf', weight: 1.0 }
+{ type: 'trustnet/assignment', src: '@mf', dest: '@othermf', weight: 1.0 }
 ```
 
-FIXME: should we use @mf instead of @main for src?
+Notice we use the meta feed as the destination. The claims subfeed of 
+the destination is given by the area and layout of meta feeds.
 
 # Feedless identity
 
