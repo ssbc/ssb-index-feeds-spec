@@ -92,25 +92,28 @@ the destination is given by the area and layout of meta feeds.
 
 # Feedless identity
 
-Feedless identity is a concept where multiple regular feeds are linked
-together with a specific purpose such as belonging to the same
+Feedless identity is a concept where multiple regular identities are
+linked together with a specific purpose, such as belonging to the same
 physical person (same-as). The identity will have keypair that is
-shared with between the linked members.
+shared with the linked members. The reason it is called feedless is
+because, as the name implies, all messages related to the identity is
+posted on the feeds of the members of an feedless identity.
 
-Thus feedless is a meta feed that contains messages related to other
-feeds it is linked to. It works by consensus, meaning as long as all
-the members of a feedless identity are mutually linked, the identity
-is valid. Any member of the identity can revoke the validity of an
-identity by creating a tombstone message.
+Each identity should have a feed containing messages related to
+feedless identities it is linked to. Each feedless identity works by
+consensus, meaning as long as all the members of an identity are
+mutually linked, the identity is considered valid. Any member of the
+identity can revoke the validity of an identity by creating a
+tombstone message.
 
-Anyone can create a new feedless identity by first creating a keypair
-and then announcing the identity:
+To create a new feedless identity, a keypair is created and the
+identity is announced:
 
 ```
 { type: 'feedless/create', identity: '@id', name: 'arj' }
 ```
 
-Then the identity can be linked between metafeeds:
+The identity can then be linked between identities:
 
 ```
 { type: 'feedless/link', identity: '@id', from: '@mf', to: '@othermf', tangles: { feedless: { root: '%abc', previous: '%abcd' } } }
@@ -119,12 +122,13 @@ Then the identity can be linked between metafeeds:
 Once @othermf posts a similar message, the identity is linked and the
 creator of the identity should send the private key of the identity to
 the new member. Messages of a feedless identity are tangled using the
-initial message.
+initial message as the root.
 
 The identity can be extended with members by having all current
-members linking the new feed and the new feed linking back.
+members linking the new identity and the new identity linking back.
 
-Any member can revoke the identity by posting the following message:
+Any member can revoke the feedless identity by posting the following
+message:
 
 ```
 { type: 'feedless/tombstone', identity: '@id', tangles: { feedless: { root: '%abc', previous: '%abcd' } } }
@@ -133,7 +137,9 @@ Any member can revoke the identity by posting the following message:
 Once another member sees this message they should also post a
 tombstone message, this is to make it harder for an adversary to try
 and keep the identity alive by withholding new messages after one of
-the feeds has been compromised.
+the identities has been compromised. It is up to the members to create
+a new feedless identity as the existing is now considered void and
+should not be used.
 
 Lastly the name can be changed in a consensus fashion as well:
 
@@ -141,16 +147,12 @@ Lastly the name can be changed in a consensus fashion as well:
 { type: 'feedless/name', identity: '@id', name: 'arj', tangles: { feedless: { root: '%abc', previous: '%abcd' } } }
 ```
 
-A new feed added to the identity can merge these messages by including
-the name in the link message.
+A new identity added to the feedless identity can merge these messages
+by including the name in the link message.
 
-These feedless identities thus act as public groups that can e.g. be
-used for same-as between multiple physical devices belonging to the
-same person.
-
-The goal of feedless identities is for small groups where the members
-should be publicly known. For larger groups, [private-groups] should
-be considered instead.
+These feedless identities thus act as public groups. They work best
+for small groups where the members should be publicly known. For
+larger groups, [private-groups] should be considered instead.
 
 It might also be possible to operate with identities where instead of
 full censensus only a quorum is needed. Imagine you have groups of
