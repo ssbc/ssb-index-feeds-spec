@@ -12,12 +12,12 @@ feed for partial replication.
 The new meta feed should contain the following entries:
 
 ```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'main', id: '@main' },
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'indexes', id: '@indexes' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claims', id: '@claims' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'claimaudits', id: '@claimaudits' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'trust', id: '@trust' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', purpose: 'feedlessidentity', id: '@feedless' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', purpose: 'main', id: '@main' },
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', purpose: 'indexes', id: '@indexes' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', purpose: 'claims', id: '@claims' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', purpose: 'claimaudits', id: '@claimaudits' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', purpose: 'trust', id: '@trust' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', purpose: 'feedlessidentity', id: '@feedless' }
 ```
 
 ## Indexes
@@ -32,8 +32,8 @@ described in [subset replication].
 Applications should create at least two index feeds:
 
 ```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@index1', query: 'and(type(contact),author(@main))' }
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@index2', query: 'and(type(about),author(@main))' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', id: '@index1', query: 'and(type(contact),author(@main))' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', id: '@index2', query: 'and(type(about),author(@main))' }
 ```
 
 ## Claims and audits
@@ -46,7 +46,7 @@ that these claims are indeed valid indexes.
 Claims are written in much the same way as indexes:
 
 ```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', id: '@claim1', query: 'and(type(contact),author(@other))' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', id: '@claim1', query: 'and(type(contact),author(@other))' }
 ```
 
 An auditor verifies claims of other feeds and writes messages of the
@@ -78,7 +78,7 @@ where this will be used is for delegating trust related to
 verification of claims:
 
 ```
-{ type: 'metafeed/operation', operation: 'add', feedtype: 'classic', area: 'claimaudits', id: '@claimaudits' }
+{ type: 'metafeed/operation', operation: 'add', feedformat: 'classic', area: 'claimaudits', id: '@claimaudits' }
 ```
 
 A trust assignment from you to another feeds claimaudits feed would be:
