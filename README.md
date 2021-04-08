@@ -167,9 +167,9 @@ larger groups, [private-groups] should be considered instead.
 
 If a feedless identity A is added as a member of another feedless
 identity B (group of groups) then just one member of A needs to link
-back. The `to` field of the link message from B should point to any
-member of A. It doesn't have to be the member linking back as the list
-of members can be deduced from that member.
+back. A new `representative` field of the link message from B should
+point to any member of A. It doesn't have to be the member linking
+back as the list of members can be deduced from that member.
 
 For a good starting point for existing discussions on SSB going back 5
 years (linked in the thread):
