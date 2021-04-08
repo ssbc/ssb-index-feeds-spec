@@ -175,6 +175,8 @@ For a good starting point for existing discussions on SSB going back 5
 years (linked in the thread):
 %YaWEWHDWAY6p/g9zIwCJovsd1SUyHpwuGGz3Ug/jtW8=.sha256
 
+Mix & arj talk: https://hackmd.io/iQlUz8nBSeecrrb5mQtcUQ
+
 # Replication
 
 Here we expand on how feeds are replicated within a system with meta
