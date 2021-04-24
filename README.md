@@ -92,6 +92,8 @@ the destination is given by the area and layout of meta feeds.
 
 # Feedless identity
 
+FIXME: this concept is morphing into a [fusion identity spec](https://github.com/ssb-ngi-pointer/fusion-identity-spec)
+
 Feedless identity is a concept where multiple regular identities are
 linked together with a specific purpose, such as belonging to the same
 physical person (same-as). The identity will have keypair that is
