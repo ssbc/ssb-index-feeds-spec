@@ -36,6 +36,12 @@ Applications should create at least two index feeds:
 { type: 'metafeed/add', feedformat: 'classic', id: '@index2', query: '{ op: 'and', data: [{ op: 'type', data: 'about' }, { op: 'author', data: '@main' }] }' }
 ```
 
+Index message format:
+
+```
+{ type: 'metafeed/index', key: %hash }
+```
+
 ## Claims and audits
 
 Clients supporting meta feeds should create indexes as described above
