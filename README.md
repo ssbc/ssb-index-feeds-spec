@@ -39,7 +39,7 @@ Applications should create at least two index feeds:
 Index message format:
 
 ```
-{ type: 'metafeed/index', key: %hash }
+{ type: 'metafeed/index', indexed: %hash }
 ```
 
 ## Claims and audits
