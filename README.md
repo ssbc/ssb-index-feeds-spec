@@ -32,8 +32,8 @@ described in [subset replication].
 Applications should create at least two index feeds:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', id: '@index1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@main' }] }' }
-{ type: 'metafeed/add', feedformat: 'classic', id: '@index2', query: '{ op: 'and', data: [{ op: 'type', data: 'about' }, { op: 'author', data: '@main' }] }' }
+{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@main' }] }' }
+{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index2', query: '{ op: 'and', data: [{ op: 'type', data: 'about' }, { op: 'author', data: '@main' }] }' }
 ```
 
 Index message format:
@@ -52,8 +52,15 @@ that these claims are indeed valid indexes.
 Claims are written in much the same way as indexes:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', id: '@claim1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@other' }] }' }
+{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claims', id: '@claim1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@other' }] }' }
 ```
+
+Claims message format:
+
+```
+{ type: 'metafeed/claim', claimed: %hash }
+```
+
 
 An auditor verifies claims of other feeds and writes messages of the
 following form to the the claimaudits feed:
@@ -84,7 +91,7 @@ where this will be used is for delegating trust related to
 verification of claims:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', area: 'claimaudits', id: '@claimaudits' }
+{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claimaudits', id: '@claimaudits', area: 'claimaudits' }
 ```
 
 A trust assignment from you to another feeds claimaudits feed would be:
