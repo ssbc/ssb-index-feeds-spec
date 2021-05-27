@@ -32,9 +32,11 @@ described in [subset replication].
 Applications should create at least two index feeds:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@main' }] }' }
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index2', query: '{ op: 'and', data: [{ op: 'type', data: 'about' }, { op: 'author', data: '@main' }] }' }
+{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index1', querylang: 'ssb-ql-1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@main' }] }' }
+{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index2', querylang: 'ssb-ql-1', query: '{ op: 'and', data: [{ op: 'type', data: 'about' }, { op: 'author', data: '@main' }] }' }
 ```
+
+Definition of the query language [ssb-ql-1].
 
 Index message format:
 
@@ -52,7 +54,7 @@ that these claims are indeed valid indexes.
 Claims are written in much the same way as indexes:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claims', id: '@claim1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@other' }] }' }
+{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claims', id: '@claim1', querylang: 'ssb-ql-1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@other' }] }' }
 ```
 
 Claims message format:
@@ -177,3 +179,4 @@ that decide what claims can be used.
 [subset replication]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
 [private-groups]: https://github.com/mixmix/ssb-tribes
 [fusion identity spec]: https://github.com/ssb-ngi-pointer/fusion-identity-spec
+[ssb-ql-1]: https://github.com/ssb-ngi-pointer/ssb-subset-replication-spec#query-language
