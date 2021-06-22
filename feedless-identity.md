@@ -1,6 +1,5 @@
 Feedless identity is a concept where multiple regular identities are
-linked together with a specific purpose, such as belonging to the same
-physical person (same-as). The identity will have keypair that is
+linked together with a specific purpose. The identity will have keypair that is
 shared with the linked members. The reason it is called feedless is
 because, as the name implies, all messages related to the identity is
 posted on the feeds of the members of an feedless identity.
