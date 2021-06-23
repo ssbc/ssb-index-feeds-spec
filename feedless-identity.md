@@ -1,3 +1,5 @@
+**Notice**: this concept/draft was merged into https://github.com/ssb-ngi-pointer/fusion-identity-spec. This is just still here for archival purposes.
+
 Feedless identity is a concept where multiple regular identities are
 linked together with a specific purpose. The identity will have keypair that is
 shared with the linked members. The reason it is called feedless is
