@@ -14,7 +14,7 @@ The new meta feed should contain the following entries:
 ```
 { type: 'metafeed/add', feedpurpose: 'main', subfeed: '@main.ed25519' },
 { type: 'metafeed/add', feedpurpose: 'indexes', subfeed: '@indexes.bbfeed-v1' }
-{ type: 'metafeed/add', feedpurpose: 'audits', subfeed: '@audits.ed25519' }
+{ type: 'metafeed/add', feedpurpose: 'indexaudits', subfeed: '@audits.ed25519' }
 { type: 'metafeed/add', feedpurpose: 'trust', subfeed: '@trust.bbfeed-v1' }
 { type: 'metafeed/add', feedpurpose: 'fusionidentities', subfeed: '@fusion.ed25519' }
 ```
@@ -65,7 +65,7 @@ feed contains an error or becomes stale. One the other hand if it is
 not the same, then 3 nodes in the network should each create an index
 feeds, this is to decrease the chances of an index growing stale.
 
-## Audits
+## Index audits
 
 Indexes can be seen as a *claim*, in that, these are the messages
 matching a query. It is important that these are accurate and thus
@@ -82,7 +82,7 @@ After verifying an index feed, a message is posted on the audit feed:
 
 ```
 { 
-  type: 'index/verification', 
+  type: 'index/audit', 
   latestseq: x, 
   subfeed: '@index1.ed25519', 
   metafeed: '@mf.bbfeed-v1', 
@@ -106,7 +106,7 @@ as:
 
 ```
 { 
-  type: 'index/verification', 
+  type: 'index/audit', 
   latestseq: x, 
   subfeeed: '@index2.ed25519', 
   metafeed: '@mf.bbfeed-v1', 
@@ -120,7 +120,7 @@ posted:
 
 ```
 { 
-  type: 'index/verification', 
+  type: 'index/audit', 
   latestseq: x, 
   subfeeed: '@index2.ed25519', 
   metafeed: '@mf.bbfeed-v1', 
