@@ -2,7 +2,7 @@
 
 Status: Design phase
 
-This document will outline the steps needed to convert an existing SSB
+This document outlines the steps needed to convert an existing SSB
 identity to make it ready for partial replication. First a root meta
 feed will be generated from the existing SSB feed as described in
 [ssb-meta-feed]. The main feed is linked with the meta feed which
@@ -12,31 +12,46 @@ feed for partial replication.
 The new meta feed should contain the following entries:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'main', id: '@main' },
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'indexes', id: '@indexes' }
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claims', id: '@claims' }
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claimaudits', id: '@claimaudits' }
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'trust', id: '@trust' }
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'fusionidentities', id: '@fusion' }
+{ type: 'metafeed/add', feedpurpose: 'main', subfeed: '@main.ed25519' },
+{ type: 'metafeed/add', feedpurpose: 'indexes', subfeed: '@indexes.bbfeed-v1' }
+{ type: 'metafeed/add', feedpurpose: 'audits', subfeed: '@audits.ed25519' }
+{ type: 'metafeed/add', feedpurpose: 'trust', subfeed: '@trust.bbfeed-v1' }
+{ type: 'metafeed/add', feedpurpose: 'fusionidentities', subfeed: '@fusion.ed25519' }
 ```
 
 ## Indexes
 
 Indexes is a meta feed of feeds linking to a subset of messages in
 another feed. These can be used for partial replication of the main
-feed. The feeds inside this meta feed should only contain hashes of
-the original messages as their content. These linked messages can be
-replicated efficiently as auxiliary data during replication as
-described in [subset replication].
+feed. This means they are only used when synchonizing a feed for the
+first time. After this, EBT should be used to keep the feed in sync.
 
-Applications should create at least two index feeds:
+The feeds inside this meta feed should only contain hashes of the
+original messages as their content. These index feeds can be
+replicated efficiently as described in [subset replication].
+
+Applications using the main feed should create at least two index
+feeds:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index1', querylang: 'ssb-ql-1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@main' }] }' }
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'index', id: '@index2', querylang: 'ssb-ql-1', query: '{ op: 'and', data: [{ op: 'type', data: 'about' }, { op: 'author', data: '@main' }] }' }
+{ 
+  type: 'metafeed/add', 
+  feedpurpose: 'index', 
+  subfeed: '@index1.ed25519', 
+  querylang: 'ssb-ql-1', 
+  query: '{ op: 'and', args: [{ op: 'type', string: 'contact' }, { op: 'author', feed: '@main.ed25519' }] }' 
+}
+
+{ 
+  type: 'metafeed/add', 
+  feedpurpose: 'index', 
+  subfeed: '@index2.ed25519', 
+  querylang: 'ssb-ql-1', 
+  query: '{ op: 'and', args: [{ op: 'type', string: 'about' }, { op: 'author', feed: '@main.ed25519' }] }' 
+}
 ```
 
-Definition of the query language [ssb-ql-1].
+For the definition of the query language see [ssb-ql-1].
 
 Index message format:
 
@@ -44,65 +59,109 @@ Index message format:
 { type: 'metafeed/index', indexed: %hash }
 ```
 
-## Claims and audits
+If an index feed is created under the same meta feed as the main feed,
+then no other nodes needs to create an index feed unless the index
+feed contains an error or becomes stale. One the other hand if it is
+not the same, then 3 nodes in the network should each create an index
+feeds, this is to decrease the chances of an index growing stale.
 
-Clients supporting meta feeds should create indexes as described above
-for their own main feed. In order to still do partial replicating of
-older feeds it might make sense for others to create claims and audit
-that these claims are indeed valid indexes.
+## Audits
 
-Claims are written in much the same way as indexes:
+Indexes can be seen as a *claim*, in that, these are the messages
+matching a query. It is important that these are accurate and thus
+other nodes in the network should audit these. Thus catching malicious
+nodes but also simple programming errors.
 
-```
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claims', id: '@claim1', querylang: 'ssb-ql-1', query: '{ op: 'and', data: [{ op: 'type', data: 'contact' }, { op: 'author', data: '@other' }] }' }
-```
-
-Claims message format:
-
-```
-{ type: 'metafeed/claim', claimed: %hash }
-```
-
-
-An auditor verifies claims of other feeds and writes messages of the
-following form to the the claimaudits feed:
+An auditor verifies an index by being in possesion of the same mesages
+and verifies that no messages are left out and that the index is not
+growing stale. After verifying an index feed, a message is posted on
+the audit feed:
 
 ```
-{ type: 'claims/verification', latestseq: x, id: '@claim1', metafeed: '@mf', status: 'verified' }
-{ type: 'claims/verification', latestseq: x, id: '@claim2', metafeed: '@mf', status: 'invalid' }
+{ 
+  type: 'index/verification', 
+  latestseq: x, 
+  subfeed: '@index1.ed25519', 
+  metafeed: '@mf.bbfeed-v1', 
+  status: 'verified' 
+}
 ```
 
-Because feeds are immutable, once you have verified a feed up until
-sequence x the past can never change. In order not to create too many
-verification messages, a new message should only be posted if claim is
-no longer valid. How often claims should be verified is at the
-discretion of the auditor.
+Because the messages on feeds are immutable, once a feed has been
+verified up until sequence x, the past can never change. This holds
+true because the network will only accept new messages on a feed that
+correctly extends the existing feed.
 
-In the case where a claim is no longer valid, the claim feed and all
+In order not to create too many verification messages, a new message
+should only be posted if an index is no longer valid or it has grown
+stale. How often indexes should be verified is at the discretion of
+the auditor.
+
+An index feed is considered stale if that has not been updated a week
+after a message is posted on the indexed feed. These should be posted
+as:
+
+```
+{ 
+  type: 'index/verification', 
+  latestseq: x, 
+  subfeeed: '@index2.ed25519', 
+  metafeed: '@mf.bbfeed-v1', 
+  status: 'stale',
+  reason: 'not updated since 2021-06-25'
+}
+```
+
+In case an index is invalid, the following kind of message should be
+posted:
+
+```
+{ 
+  type: 'index/verification', 
+  latestseq: x, 
+  subfeeed: '@index2.ed25519', 
+  metafeed: '@mf.bbfeed-v1', 
+  status: 'invalid',
+  reason: 'Missing the message %hash.sha256 with sequence 100'
+}
+```
+
+In the case where an index is no longer valid, the index feed and all
 messages referenced from this feed should be removed from the local
-database. After this they need to be downloaded again as described
-later in the document. It is worth noting that it is limited what a
-malicious peer could do. The messages in a claim still needs to be
-signed by the author, so at worst messages can be left out.
+database. After this, another index needs to be found an used instead.
+
+It is worth noting that it is limited what a malicious peer could
+do. The messages referenced in an index still needs to be signed by
+the author, so at worst messages can be left out.
 
 ## Trust
 
-Trust is also a meta feed that contains one feed for each trust area
-with ratings within that areas as defined in [trustnet]. One area
-where this will be used is for delegating trust related to
-verification of claims:
+Trust is a meta feed that contains one feed for each trust area with
+ratings within that area as defined in [trustnet]. One area where this
+will be used is for delegating trust related to verification of
+indexes:
 
 ```
-{ type: 'metafeed/add', feedformat: 'classic', feedpurpose: 'claimaudits', id: '@claimaudits', area: 'claimaudits' }
+{ 
+  type: 'metafeed/add', 
+  feedpurpose: 'trustassignments', 
+  subfeed: '@assignments.ed25519',
+  area: 'indexaudits'
+}
 ```
 
-A trust assignment from you to another feeds claimaudits feed would be:
+A trust assignment:
 
 ```
-{ type: 'trustnet/assignment', src: '@mf', dest: '@othermf', weight: 1.0 }
+{ 
+  type: 'trustnet/assignment', 
+  src: '@mf.bbfeed-v1', 
+  dest: '@othermf.bbfeed-v1',
+  weight: 1.0 
+}
 ```
 
-Notice we use the meta feed as the destination. The claims subfeed of 
+Notice we use the meta feed as the destination. The index subfeed of
 the destination is given by the area and layout of meta feeds.
 
 # Fusion identity
