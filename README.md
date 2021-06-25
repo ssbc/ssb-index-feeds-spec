@@ -74,8 +74,11 @@ nodes but also simple programming errors.
 
 An auditor verifies an index by being in possesion of the same mesages
 and verifies that no messages are left out and that the index is not
-growing stale. After verifying an index feed, a message is posted on
-the audit feed:
+growing stale. Anyone can be an auditor, trust is assigned to auditors
+as described in the next section. This should keep bad auditors out of
+the system.
+
+After verifying an index feed, a message is posted on the audit feed:
 
 ```
 { 
