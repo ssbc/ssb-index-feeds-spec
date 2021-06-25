@@ -186,12 +186,13 @@ should still be followed, this is to ensure backwards compatibility
 with existing clients.
 
 Assuming one wants to do partial replication of a subset of a feed,
-first one tries to find the meta feed (FIXME: describe in detail) and
-from that the index feed. 
+first one tries to find the meta feed using the rpc getSubset from
+[subset replication] on the main feed author and type
+'metafeed/announce'. Then downloading the meta feed to try and find
+index feeds.
 
-If that is not found, one uses trusted claimaudits feeds combined with
-the meta feeds they link to find one that can be used. Trusted is
-defined as:
+If that is not found, one uses trusted index audits feeds to find an
+index that can be used. Trusted is defined as:
 
 A target feed is trusted if:
  -  One has assigned any positive, non-zero amount of trust to the
@@ -212,7 +213,7 @@ A trustnet calculation is performed as:
    they are added to the concatenation of the top 2 clusters before returning
    the result as the trustnet calculation.
 
-If no verified claims are available one should fall back to full
+If no verified indexes are available one should fall back to full
 replication of that main feed.
 
 A random new user will at first not trust anyone and thus can't do
@@ -221,10 +222,10 @@ someone they know and trust that would enable partial replication.
 
 Lets look at how onboarding could work for Alice that got invited by
 Bob. First alice downloads Bobs main feed. She then trusts Bob and
-downloads Bobs meta feed, all trust feeds, claim audits and the linked
-feed. By using the metafeed field on trust assignments, Alice is able
-to recursively download trust assignments, their claim audits and from
-that decide what claims can be used.
+downloads Bobs meta feed, all trust assignments, indexes and
+audits. By using the metafeed field on trust assignments, Alice is
+able to recursively download trust assignments, their audits and from
+that decide what indexes to be used.
 
 ## Open questions
 
