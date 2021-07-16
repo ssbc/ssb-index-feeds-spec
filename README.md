@@ -9,14 +9,15 @@ feed will be generated from the existing SSB feed as described in
 means an application can start using the feeds linked from the meta
 feed for partial replication.
 
-The new meta feed should contain the following entries:
+The new meta feed can contain the following messages (described
+as [bendy-butt] bencode dictionaries):
 
 ```
-{ type: 'metafeed/add', feedpurpose: 'main', subfeed: '@main.ed25519' },
-{ type: 'metafeed/add', feedpurpose: 'indexes', subfeed: '@indexes.bbfeed-v1' }
-{ type: 'metafeed/add', feedpurpose: 'indexaudits', subfeed: '@audits.ed25519' }
-{ type: 'metafeed/add', feedpurpose: 'trust', subfeed: '@trust.bbfeed-v1' }
-{ type: 'metafeed/add', feedpurpose: 'fusionidentities', subfeed: '@fusion.ed25519' }
+{ "type" => "metafeed/add", "feedpurpose" => "main", "subfeed" => (BFE feed ID) }
+{ "type" => "metafeed/add", "feedpurpose" => "indexes", "subfeed" => (BFE Bendy Butt feed ID) }
+{ "type" => "metafeed/add", "feedpurpose" => "index", "subfeed" => (BFE feed ID) }
+{ "type" => "metafeed/add", "feedpurpose" => "trust", "subfeed" => (BFE Bendy Butt feed ID) }
+{ "type" => "metafeed/add", "feedpurpose" => "fusionidentity", "subfeed" => (BFE Fusion Identity feed ID) }
 ```
 
 ## Indexes
@@ -30,33 +31,33 @@ The feeds inside this meta feed should only contain hashes of the
 original messages as their content. These index feeds can be
 replicated efficiently as described in [subset replication].
 
-Applications using the main feed should create at least two index
+Applications using the main feed could create at least two index
 feeds:
 
 ```
 { 
-  type: 'metafeed/add', 
-  feedpurpose: 'index', 
-  subfeed: '@index1.ed25519', 
-  querylang: 'ssb-ql-1', 
-  query: '{ op: 'and', args: [{ op: 'type', string: 'contact' }, { op: 'author', feed: '@main.ed25519' }] }' 
+  "type" => "metafeed/add",
+  "feedpurpose" => "index", 
+  "subfeed" => (Some BFE feed ID),
+  "querylang" => "ssb-ql-1",
+  "query" => '{"op":"and","args":[{"op":"type","string":"contact"},{"op":"author","feed":"@main.ed25519"}]}'
 }
 
 { 
-  type: 'metafeed/add', 
-  feedpurpose: 'index', 
-  subfeed: '@index2.ed25519', 
-  querylang: 'ssb-ql-1', 
-  query: '{ op: 'and', args: [{ op: 'type', string: 'about' }, { op: 'author', feed: '@main.ed25519' }] }' 
+  "type" => "metafeed/add",
+  "feedpurpose" => "index", 
+  "subfeed" => (Another BFE feed ID),
+  "querylang" => "ssb-ql-1",
+  "query" => '{"op":"and","args":[{"op":"type","string":"about"},{"op":"author","feed":"@main.ed25519"}]}'
 }
 ```
 
 For the definition of the query language see [ssb-ql-1].
 
-Index message format:
+Index message format in a classic SSB feed:
 
 ```
-{ type: 'metafeed/index', indexed: %hash }
+{ type: 'metafeed/index', indexed: '%msgkey' }
 ```
 
 If an index feed is created under the same meta feed as the main feed,
@@ -238,6 +239,7 @@ that decide what indexes to be used.
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [Appleseed]: https://github.com/cblgh/appleseed-metric 
 [trustnet]: https://github.com/cblgh/trustnet
+[bendy-butt]: https://github.com/ssb-ngi-pointer/bendy-butt-spec
 [ssb-friends]: https://github.com/ssbc/ssb-friends
 [subset replication]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
 [private-groups]: https://github.com/mixmix/ssb-tribes
