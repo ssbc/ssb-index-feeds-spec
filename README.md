@@ -167,6 +167,68 @@ A trust assignment:
 Notice we use the meta feed as the destination. The index subfeed of
 the destination is given by the area and layout of meta feeds.
 
+# SHS Connections
+
+One question that arises once we have multiple identities and multiple 
+apps which use different subfeeds, is: which cryptographic keypair do
+we use for secret-handshake connections? The main (classic) feed? The
+meta feed? The subfeed used by the application?
+
+An initial solution to this problem would be to connect with any ID
+you wish, and then via replication of the metafeed, other peers could
+discover what other IDs you are equivalent to, and this way they
+could infer who you are. 
+
+There is one important situation where that solution would not work: 
+room servers. A room, by design, does not replicate any feed, and it 
+authenticates peers through an allow-list of specific SSB IDs. So if
+the room recognizes you by your main feed, you are still not 
+authorized to connect using your meta feed or some subfeed, and the
+room cannot replicate your metafeed either.
+
+Another important situation to keep in mind is that some apps may
+choose to have a separate database that only contains the subfeed
+relevant to that app's use case, and maybe some other minor metadata
+such as replicating the metafeed and perhaps the `secret` files for
+other identities. But we have to assume that the database will not
+contain the entire "main" feed, because it is too large and the app
+is interested in partial replication.
+
+To put this discussion into a high-level perspective, let us define 
+two different concepts here: **use case** and **identity**. 
+
+**Identity** is essentially your cryptographic "fingerprint" or your
+"face", it's always the same everywhere you go, you cannot change it 
+and people can see who you are. But **use case** is like the social 
+context, for instance work context versus party context versus family 
+gathering context. You may want to talk to me about work in a party, 
+but I may refuse to do that. When changing social contexts, however, 
+my identity remains the same.
+
+We can treat these app situations as merely different use cases, 
+while the identity remains the same. Like social contexts aren't 
+neatly separated (there may be a work *party*, or a family 
+*business*), we can't assume that use cases will be neatly separated 
+either. So it's okay to allow some implicitness when Bob wants to 
+determine what is Alice's use case. Alice will connect as 
+Alice/main, but her use case may be strictly only chess. Or, there 
+may be an app that combines social use cases (such as Patchwork 
+features), while *also* allowing chess use cases. For instance 
+Patchbay. It may allow both use cases.
+
+We shouldn't conflate identity with use case, even though they may 
+overlap. For instance, the chess app can prompt you to insert your 
+24 words of your main feed (in order to use that for shs), but you 
+may choose to skip that and use a completely separate newly-created 
+identity (for shs), just for chess. That means you are creating a 
+new identity **for that** use case. This would be akin to using a 
+mask in a party, being a pseudonym in a social context.
+
+In practical terms in the SSB stack, use the main feed ID (or 
+whatever ID most of your peers recognize you by) as the **identity** 
+for secret-handshake connections, and infer the **use case** via
+other means, such as trial-and-error calling some muxrpc APIs.
+
 # Fusion identity
 
 Implementation of the [fusion identity spec]
