@@ -15,9 +15,9 @@ as [bendy-butt] bencode dictionaries):
 ```
 { "type" => "metafeed/add", "feedpurpose" => "main", "subfeed" => (BFE feed ID) }
 { "type" => "metafeed/add", "feedpurpose" => "indexes", "subfeed" => (BFE Bendy Butt feed ID) }
-{ "type" => "metafeed/add", "feedpurpose" => "index", "subfeed" => (BFE feed ID) }
+{ "type" => "metafeed/add", "feedpurpose" => "audits", "subfeed" => (BFE feed ID) }
 { "type" => "metafeed/add", "feedpurpose" => "trust", "subfeed" => (BFE Bendy Butt feed ID) }
-{ "type" => "metafeed/add", "feedpurpose" => "fusionidentity", "subfeed" => (BFE Fusion Identity feed ID) }
+{ "type" => "metafeed/add", "feedpurpose" => "fusionidentities", "subfeed" => (BFE feed ID) }
 ```
 
 ## Indexes
