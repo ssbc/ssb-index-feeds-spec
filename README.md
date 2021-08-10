@@ -39,20 +39,20 @@ feeds:
   "type" => "metafeed/add",
   "feedpurpose" => "index", 
   "subfeed" => (Some BFE feed ID),
-  "querylang" => "ssb-ql-1",
-  "query" => '{"op":"and","args":[{"op":"type","string":"contact"},{"op":"author","feed":"@main.ed25519"}]}'
+  "querylang" => "ssb-ql-0",
+  "query" => '{"author":"@main.ed25519","type":"contact"}'
 }
 
 { 
   "type" => "metafeed/add",
   "feedpurpose" => "index", 
   "subfeed" => (Another BFE feed ID),
-  "querylang" => "ssb-ql-1",
-  "query" => '{"op":"and","args":[{"op":"type","string":"about"},{"op":"author","feed":"@main.ed25519"}]}'
+  "querylang" => "ssb-ql-0",
+  "query" => '{"author":"@main.ed25519","type":"about"}'
 }
 ```
 
-For the definition of the query language see [ssb-ql-1].
+For the definition of the query language see [ssb-ql-0].
 
 Index message format in a classic SSB feed:
 
@@ -244,4 +244,4 @@ that decide what indexes to be used.
 [subset replication]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
 [private-groups]: https://github.com/mixmix/ssb-tribes
 [fusion identity spec]: https://github.com/ssb-ngi-pointer/fusion-identity-spec
-[ssb-ql-1]: https://github.com/ssb-ngi-pointer/ssb-subset-replication-spec#query-language
+[ssb-ql-0]: https://github.com/ssb-ngi-pointer/ssb-subset-replication-spec#ssb-ql-0
