@@ -78,15 +78,19 @@ the following steps should apply.
 
 **1. Discover and replicate the meta feed.** Given the main feed ID 
 (but not the main feed messages themselves) of a friend, we first need 
-to the root meta feed ID of that friend. To achieve that, we use the 
-RPC `getSubset` from [subset replication] on any connected peer, 
-asking for a message of type `'metafeed/announce'` on our friend's 
-main feed. If connected peers do not support this RPC, then we can 
-fallback to `createHistoryStream` to fetch the friend's full feed 
-in memory (i.e. without persisting it to the log) and then filter for
-the first message of type `'metafeed/announce'`. Once we find that
-message, we will know the feed ID for our friend's root meta feed, and
-we can replicate it in full, like we do with any other feed.
+to the root meta feed ID of that friend. To achieve that, we first look
+in our own log whether we already have a message of type 
+`metafeed/announce` authored by our friend. That message should contain
+the feed ID for the root meta feed. Otherwise, we use the RPC 
+`getSubset` from [subset replication] on any connected peer, asking for
+a message of type `'metafeed/announce'` on our friend's main feed. If 
+connected peers do not support this RPC, then we can fallback to 
+`createHistoryStream` to fetch the friend's full feed in memory (i.e. 
+without persisting it to the log) and then filter for the first message
+of type `'metafeed/announce'`. Once we find that message, we persist it
+in the log (in out-of-order fashion), and we know the feed ID for our 
+friend's root meta feed, enabling us to replicate it in full, like we 
+do with any other feed.
 
 **2. Scan through the meta feed, looking for relevant sub feeds.** The
 meta feed, once replicated, will reveal a tree of sub feeds owned by
