@@ -15,7 +15,6 @@ as [bendy-butt] bencode dictionaries):
 ```
 { "type" => "metafeed/add", "feedpurpose" => "main", "subfeed" => (BFE feed ID) }
 { "type" => "metafeed/add", "feedpurpose" => "indexes", "subfeed" => (BFE Bendy Butt feed ID) }
-{ "type" => "metafeed/add", "feedpurpose" => "fusionidentities", "subfeed" => (BFE feed ID) }
 ```
 
 ## Indexes
@@ -58,10 +57,6 @@ Index message format in a classic SSB feed:
 ```
 { type: 'metafeed/index', indexed: '%msgkey' }
 ```
-
-# Fusion identity
-
-Implementation of the [fusion identity spec]
 
 # Replication
 
@@ -137,5 +132,4 @@ data passed through the duplex will be different.
 [ssb-ebt]: https://github.com/ssbc/ssb-ebt
 [ssb-replication-scheduler]: https://github.com/ssb-ngi-pointer/ssb-replication-scheduler
 [subset replication]: https://github.com/ssb-ngi-pointer/ssb-subset-replication
-[fusion identity spec]: https://github.com/ssb-ngi-pointer/fusion-identity-spec
 [ssb-ql-0]: https://github.com/ssb-ngi-pointer/ssb-subset-replication-spec#ssb-ql-0
