@@ -55,9 +55,18 @@ For the definition of the query language see [ssb-ql-0].
 
 Index message format in a classic SSB feed:
 
+```json
+{
+  type: 'metafeed/index',
+  indexed: {
+    key: '%msgkey',
+    sequence: 42
+  }
+}
 ```
-{ type: 'metafeed/index', indexed: '%msgkey' }
-```
+
+The `indexed.sequence` might seem redundant but it might be much cheaper
+for an implementation to resolve `author@sequence` and checking the hash of the message then keeping a total `hash => message` index.
 
 # Fusion identity
 
