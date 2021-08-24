@@ -55,7 +55,7 @@ For the definition of the query language see [ssb-ql-0].
 
 Index message format in a classic SSB feed:
 
-```json
+```js
 {
   type: 'metafeed/index',
   indexed: {
