@@ -128,12 +128,6 @@ different. Note that the second part of adding indexed messages should
 only run up to the point where the indexed feed start (in step 3).
 
  
-## Open questions
-
-- Should pubs also use meta feeds?
-- How do we handle other feed types?
-- Do we need a rotational feed for the latest messages?
-
 [ssb-meta-feed]: https://github.com/ssb-ngi-pointer/ssb-meta-feed
 [bendy-butt]: https://github.com/ssb-ngi-pointer/bendy-butt-spec
 [ssb-friends]: https://github.com/ssbc/ssb-friends
