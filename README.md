@@ -109,11 +109,11 @@ are trivial to replicate, but index feeds are different, because their
 messages point to messages in another feed (let's call it the target
 feed), and we are ultimately interested in the contents of the
 messages on the target feed. To handle this, we first replicate index
-feeds in full, and persist the messages to the log. Then, we run a
-variant of EBT where `getAt` is implemented in terms of the index feed
-messages, and `append` will do a database `addOOO` for messages on the
-target feed. This EBT variant will require its own `replicate` duplex
-RPC in a separate muxrpc namespace not shared with the conventional
+feeds, and persist the messages to the log. Then, we run a variant of
+EBT where `getAt` is implemented in terms of the index feed messages,
+and `append` will do a database `addOOO` for messages on the target
+feed. This EBT variant will require its own `replicate` duplex RPC in
+a separate muxrpc namespace not shared with the conventional
 `ebt.replicate`, because the data passed through the duplex will be
 different. Note that the second part of adding indexed messages should
 only run up to the point where the indexed feed start (in step 3).
