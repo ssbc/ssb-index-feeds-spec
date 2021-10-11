@@ -1,3 +1,9 @@
+<!--
+SPDX-FileCopyrightText: 2021 Anders Rune Jensen
+
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 **Notice**: this concept/draft was merged into https://github.com/ssb-ngi-pointer/fusion-identity-spec. This is just still here for archival purposes.
 
 Feedless identity is a concept where multiple regular identities are
