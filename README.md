@@ -77,7 +77,7 @@ The `indexed.sequence` might seem redundant but it might be much cheaper
 for an implementation to resolve `author@sequence` and checking the hash 
 of the message then keeping a total `hash => message` index.
 
-## Version 1
+### Version 1
 
 An index feed is a feed format that in practice is essentially the classic
 feed format, but has different SSB URIs for feeds and messages, to carry
